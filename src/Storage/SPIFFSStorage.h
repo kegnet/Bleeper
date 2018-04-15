@@ -19,20 +19,29 @@ public:
   }
 
   void init() {
-    if (beginSpiffs)
+    if (beginSpiffs) {
+      Serial.println("SPIFFS.begin");
       SPIFFS.begin();
+    } else {
+      Serial.println("SKIP SPIFFS.begin");
+    }
     if (!SPIFFS.exists(CONFIGS_FILE)) {
       Serial.println(String(CONFIGS_FILE) + " does not exist");
       if (formatIfEmpty) {
         Serial.println("Formatting SPIFFS");
         SPIFFS.format();
+      } else {
+        Serial.println("Not formatting SPIFFS");
       }
+    } else {
+      Serial.println(String(CONFIGS_FILE) + " exists");
     }
   }
 
   void persist() {
     File f = SPIFFS.open(CONFIGS_FILE, "w");
     if (!f) {
+      Serial.println("persist not");
       f.close();
       return;
     }
@@ -42,11 +51,13 @@ public:
       f.write(0);
     }
     f.close();
+    Serial.println("persist close");
   }
 
   void load() {
     File f = SPIFFS.open(CONFIGS_FILE, "r");
     if (!f) {
+      Serial.println("load not");
       f.close();
       persist();
       return;
@@ -58,6 +69,7 @@ public:
     }
     Bleeper.configuration.setFromDictionary(ConfigurationDictionary(storedVars));
     f.close();
+    Serial.println("load close");
   }
 
 private:
