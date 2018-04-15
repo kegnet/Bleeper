@@ -13,10 +13,20 @@
 
 class SPIFFSStorage: public Storage {
 public:
+  SPIFFSStorage(bool beginSpiffs=true, bool formatIfEmpty=true) {
+    this->beginSpiffs = beginSpiffs;
+    this->formatIfEmpty = formatIfEmpty;
+  }
+
   void init() {
-    //SPIFFS.begin();
+    if (beginSpiffs)
+      SPIFFS.begin();
     if (!SPIFFS.exists(CONFIGS_FILE)) {
-      //SPIFFS.format();
+      Serial.println(String(CONFIGS_FILE) + " does not exist");
+      if (formatIfEmpty) {
+        Serial.println("Formatting SPIFFS");
+        SPIFFS.format();
+      }
     }
   }
 
@@ -49,5 +59,9 @@ public:
     Bleeper.configuration.setFromDictionary(ConfigurationDictionary(storedVars));
     f.close();
   }
+
+private:
+  bool beginSpiffs;
+  bool formatIfEmpty;
 
 };
