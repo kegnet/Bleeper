@@ -14,9 +14,9 @@
 class SPIFFSStorage: public Storage {
 public:
   void init() {
-    SPIFFS.begin();
+    //SPIFFS.begin();
     if (!SPIFFS.exists(CONFIGS_FILE)) {
-      SPIFFS.format();
+      //SPIFFS.format();
     }
   }
 
